@@ -43,6 +43,11 @@ class TestDriveState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeFavorite(WordPair w) {
+    favorites.remove(w);
+    notifyListeners();
+  }
+
   bool isFavorite() {
     return favorites.contains(current);
   }
@@ -116,6 +121,33 @@ class BigCard extends StatelessWidget {
   }
 }
 
+class FavoritesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var state = context.watch<TestDriveState>();
+    var children = <Widget>[];
+
+    for (var liked in state.favorites) {
+      children.add(ListTile(
+        leading: const Icon(Icons.favorite),
+        title: Text(liked.asLowerCase),
+        onTap: () {
+          state.removeFavorite(liked);
+        },
+      ));
+    }
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      body: Center(
+        child: ListView(
+          children: children,
+        ),
+      ),
+    );
+  }
+}
+
 class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
@@ -133,7 +165,7 @@ class _HomePageState extends State<HomePage> {
         break;
 
       case 1:
-        screen = const Center(child: Text("Hello new world"));
+        screen = FavoritesPage();
         break;
 
       default:
