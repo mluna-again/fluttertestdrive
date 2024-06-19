@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
                 useMaterial3: true,
                 colorScheme:
                     ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
-            home: TestDrivePage()));
+            home: HomePage()));
   }
 }
 
@@ -113,5 +113,61 @@ class BigCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  var index = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget screen;
+    switch (index) {
+      case 0:
+        screen = TestDrivePage();
+        break;
+
+      case 1:
+        screen = const Center(child: Text("Hello new world"));
+        break;
+
+      default:
+        throw UnimplementedError("No widget for $index index");
+    }
+
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+          body: Row(
+        children: [
+          SafeArea(
+            child: NavigationRail(
+              extended: constraints.maxWidth >= 1000,
+              destinations: const [
+                NavigationRailDestination(
+                    icon: Icon(Icons.home), label: Text("Home")),
+                NavigationRailDestination(
+                    icon: Icon(Icons.favorite), label: Text("Saved")),
+              ],
+              selectedIndex: index,
+              onDestinationSelected: (value) {
+                setState(() {
+                  index = value;
+                });
+              },
+            ),
+          ),
+          Expanded(
+              child: Container(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            child: screen,
+          ))
+        ],
+      ));
+    });
   }
 }
